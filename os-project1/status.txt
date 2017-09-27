@@ -1,0 +1,21 @@
+I have finished part1, part2 and part3.
+
+ceabc02825a5b908e474b053074ab53c  output-part1
+ff6bac0d25d07a0ec4d9f8ba31bc8f7a  output-part2   pagefault: 3159
+ff6bac0d25d07a0ec4d9f8ba31bc8f7a  output-part3   pagefault: 3159
+
+how to implement part3?
+
+Brief Description:
+
+1) I use argv[1], argv[2], argv[3], argv[4] to get the configuration for
+the program. 
+
+2) According to the inputs, I created the pagetable and physical frames we
+want to simulate.
+
+3) The pagetable and physical frames are both a batch of continuous memory.
+
+4) I used a freelist to save the free frames at the beginning.
+
+5) 
