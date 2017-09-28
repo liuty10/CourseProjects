@@ -4,4 +4,10 @@ virtual to physical Translation
 This is a course projects from Tongping Liu's class:
 https://github.com/liuty10/CourseProjects.git
 
+How I implemented the LRU:
+I use a FIFO to track history memory accesses.  
+I add the page number to the FIFO each time when there is a memory access. 
+When doing LRU replacement, I just count the numbers of each frame remaining 
+in the FIFO and choose the one that appears the smallest time in current FIFO. 
+
 
