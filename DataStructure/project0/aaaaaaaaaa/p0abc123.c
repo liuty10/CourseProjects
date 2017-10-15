@@ -204,8 +204,8 @@ void printCourseData(Course courseM[], int iNumCourse)
     int i;
     int j;
     // Print a heading for the list of courses and attributes
-    printf("\t\tID \t\tCourse Name\n");
-    printf("\t\t\t\t\tattr \t\t valur\n");
+    printf("\t\t\tID \t\tCourse Name\n");
+    printf("\t\t\t\t\t\t\t\t\t\t\t\tattr \t\t valur\n");
     
     for (i = 0; i < iNumCourse; i++)
     {
@@ -216,10 +216,9 @@ void printCourseData(Course courseM[], int iNumCourse)
         for (j = 0; j < courseM[i].iNumberOfAttrs; j++)
         {
             // ??
-	          printf("\t\t\t\t\t%s\t\t%s \n",courseM[i].attrM[j].szAttrType, 
+	          printf("\t\t\t\t\t\t\t\t\t\t\t\t%s\t\t%s \n",courseM[i].attrM[j].szAttrType, 
 	          courseM[i].attrM[j].szAttrValue);
         }
-       printf("\n");
     }
 }
 
