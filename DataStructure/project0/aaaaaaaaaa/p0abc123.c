@@ -204,18 +204,22 @@ void printCourseData(Course courseM[], int iNumCourse)
     int i;
     int j;
     // Print a heading for the list of courses and attributes
-    printf("Needs a heading\n");
+    printf("\t\tID \t\tCourse Name\n");
+    printf("\t\t\t\t\tattr \t\t valur\n");
     
     for (i = 0; i < iNumCourse; i++)
     {
         // Print a course Id and Name
         // ??
-        
+        printf("\t\t %s \t%s \n",courseM[i].szCourseId, courseM[i].szCourseName); 
         //  Print each attribute 
         for (j = 0; j < courseM[i].iNumberOfAttrs; j++)
         {
             // ??
+	          printf("\t\t\t\t\t%s\t\t%s \n",courseM[i].attrM[j].szAttrType, 
+	          courseM[i].attrM[j].szAttrValue);
         }
+       printf("\n");
     }
 }
 
@@ -248,8 +252,8 @@ char * getToken (char *pszInputTxt, char szToken[], int iTokenSize)
 {
     int iDelimPos;                      // found position of delim
     int iCopy;                          // number of characters to copy
-    char szDelims[20] = " \n\r";        // delimiters
-    szToken[0] = '\0';
+    char szDelims[20] = " \n\r";        // delimiters. The first character is
+    szToken[0] = '\0';                  // an space.
 
     // check for NULL pointer 
     if (pszInputTxt == NULL)
