@@ -38,21 +38,15 @@ void thinking(){
 }
 
 void pickUpChopsticks(long threadX){
-  
-  printf("Philosopher%ld is getting the chopstics\n",threadX);
+  printf("%ld is trying to pick the chopsticks\n",threadX); 
   pthread_mutex_lock(&mutex_one);
-  while(index!=threadX){
-    pthread_cond_wait(&cond_one,&mutex_one);
+  printf("%ld get the chopsticks\n",threadX); 
+  while(index != threadX){ 
+      printf("%ld give up chopsticks and sleep\n",threadX); 
+      pthread_cond_wait(&cond_one,&mutex_one);
+      printf("%ld wake up and try to get lock again\n",threadX); 
   }
-  printf("Philosopher%ld get the chopstics\n",threadX);
-
-  /* printf("Philosopher%ld is getting the Left chopstic...\n",threadX);
-  pthread_mutex_lock(&chopsticksMutex[threadX]);
-  printf("Philosopher%ld get the Left chopstic\n",threadX);
-
-  printf("Philosopher%ld is getting the Right chopstic...\n",threadX);
-  pthread_mutex_lock(&chopsticksMutex[(threadX+1)%iNumThread]);
-  printf("Philosopher%ld get the Right chopstic...\n",threadX);*/
+  printf("%ld start to use the chopsticks\n",threadX); 
 }
 
 void eating(){
@@ -61,29 +55,21 @@ void eating(){
 }
 
 void putDownChopsticks(long threadX){
- printf("Philosopher%ld is putting the chopsticks...\n",threadX);
- 
- index = threadX + 1;
- pthread_cond_signal(&cond_one);
+ printf("%ld eat\n",threadX); 
+ index = (threadX + 1)%iNumThread;
+ pthread_cond_broadcast(&cond_one);
+ printf("%ld signal cond\n",threadX); 
  pthread_mutex_unlock(&mutex_one);
- /*printf("Philosopher%ld is putting the Left chopstic...\n",threadX);
- pthread_mutex_unlock(&chopsticksMutex[threadX]);
- printf("Philosopher%ld put the Left chopstic\n",threadX);
-  
- printf("Philosopher%ld is putting the Right chopstic...\n",threadX);
- pthread_mutex_unlock(&chopsticksMutex[(threadX+1)%iNumThread]);
- printf("Philosopher%ld put the Right chopstic...\n",threadX);*/
+ printf("%ld signal release lock\n",threadX); 
 }
 
 //---------------------------------------------------------------------------------------
 
 void *PhilosopherThread(void *str){
   long threadX = (long)str;
-  printf("This is philosopher %ld\n",threadX);
   thinking();
 
   pickUpChopsticks(threadX);
-  fprintf(stderr,"Philosopher %ld is eating\n", threadX);  
   eating();
   
   putDownChopsticks(threadX);
