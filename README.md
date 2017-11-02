@@ -7,3 +7,11 @@ OS projects:
 
 2. Dinning Philosopher: Philosopers eat around a tale.
    Problem Description: http://www.cs.utsa.edu/~tongpingliu/teaching/cs5523/handouts/project2.html
+   
+   Part 1: create multiple threads.
+   Part 2: using multiple mutexes.
+   Part 3: solve the deadlock problem using only one mutex object and one conditional variable
+   Part 4: solve the deadlock problem of part2 used the pthread_mutex_trylock
+
+
+
