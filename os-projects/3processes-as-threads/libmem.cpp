@@ -3,6 +3,7 @@
 #include <dlfcn.h>
 #include <stdarg.h>
 #include "xmemory.h"
+#include "xrun.h"
 
 extern "C" {
   void initializer (void) __attribute__((constructor));
@@ -54,7 +55,7 @@ extern "C" {
       if (sz < 16) {
         sz = 16;
       }
-      sz = (sz + 15) & ~15;
+      sz = (sz + 15) & ~15;// sz will be 1*16, 2*16, 3*16, 4*16 ... 
       ptr = tempmalloc(sz);
     }
     else {
@@ -109,6 +110,12 @@ extern "C" {
     else {
       return tempmalloc(sz);
     }
+  }
+  int pthread_create(pthread_t *tid const pthread_attr * attr, void *(*fn)(void *), void * arg){
+    if(initialized){
+      *tid = (pthread_t)xrun::spawn(fn, arg);
+    }
+    return 0;
   }
 };
 

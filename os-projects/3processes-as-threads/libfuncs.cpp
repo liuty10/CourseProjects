@@ -69,6 +69,7 @@ void init_real_functions() {
 		_exit(2);
 	}
 
+	//SET_WRAPPED(pthread_create, pthread_handle);
 	SET_WRAPPED(pthread_create, pthread_handle);
 	SET_WRAPPED(pthread_cancel, pthread_handle);
 	SET_WRAPPED(pthread_join, pthread_handle);
