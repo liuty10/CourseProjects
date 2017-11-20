@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <stdarg.h>
-#include "xmemory.h"
 #include "xrun.h"
 
 extern "C" {
@@ -17,11 +16,19 @@ extern "C" {
   void initializer (void) {
     // Using globals to provide allocation
     // before initialized.
-    init_real_functions();
+    //init_real_functions();
  
-    xmemory::getInstance().initialize();
-    initialized = true;
-		fprintf(stderr, "Now we have initialized successfuuly\n"); 
+    //xmemory::getInstance().initialize();
+    //initialized = true;
+		//fprintf(stderr, "Now we have initialized successfuuly\n"); 
+	  
+    DEBUG("intializing libdthread");
+	  init_real_functions();
+	  global_data = (runtime_data_t*)mmap(NULL, xdefines::PageSize, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	  global_data->thread_index = 1;
+	  DEBUG("after mapping global data structure");
+	  xrun::initialize();
+	  initialized = true;
   }
 
   void finalizer (void) {
@@ -55,11 +62,12 @@ extern "C" {
       if (sz < 16) {
         sz = 16;
       }
-      sz = (sz + 15) & ~15;// sz will be 1*16, 2*16, 3*16, 4*16 ... 
+      sz = (sz + 15) & ~15;
       ptr = tempmalloc(sz);
     }
     else {
-      ptr = xmemory::getInstance().malloc(sz);
+      ptr = xrun::malloc(sz);
+      //ptr = xmemory::getInstance().malloc(sz);
     }
 
     if (ptr == NULL) {
@@ -83,13 +91,15 @@ extern "C" {
     // initializaton has been finished to simplify
     // the logic of tempmalloc
     if(initialized) {
-      xmemory::getInstance().free (ptr);
+      xrun::free (ptr);
+      //xmemory::getInstance().free (ptr);
     }
   }
 
   size_t malloc_usable_size(void * ptr) {
     if(initialized) {
-      return xmemory::getInstance().malloc_usable_size(ptr);
+      return xrun::getSize(ptr);
+      //return xmemory::getInstance().malloc_usable_size(ptr);
     }
     return 0;
   }
@@ -99,23 +109,25 @@ extern "C" {
     if(!initialized) {
 			initializer();
     }
-    return xmemory::getInstance().memalign(boundary, size);
-   // return NULL;
+    return xrun::memalign(boundary, size);
+    //return xmemory::getInstance().memalign(boundary, size);
   }
 
   void * realloc (void * ptr, size_t sz) {
     if(initialized) {
-      return xmemory::getInstance().realloc(ptr, sz);
+      return xrun::realloc(ptr, sz);
+      //return xmemory::getInstance().realloc(ptr, sz);
     }
     else {
       return tempmalloc(sz);
     }
   }
-  int pthread_create(pthread_t *tid const pthread_attr * attr, void *(*fn)(void *), void * arg){
-    if(initialized){
-      *tid = (pthread_t)xrun::spawn(fn, arg);
-    }
-    return 0;
+  int pthread_create (pthread_t * tid, const pthread_attr_t * attr, void *(*fn) (void *), void * arg) {
+	  //assert(initialized);
+	  if(initialized) {
+		  *tid = (pthread_t)xrun::spawn(fn, arg);
+	  }
+	  return 0;
   }
 };
 

@@ -6,10 +6,8 @@ INCLUDE_DIR = .
 
 #SRCS_IBS= $(SOURCE_DIR)/IBS/ibsop.c  
 SRCS_IBS= 
-SRCS =  $(SOURCE_DIR)/libmem.cpp \
+SRCS =  $(SOURCE_DIR)/libyithread.cpp \
 	$(SOURCE_DIR)/libfuncs.cpp         \
-	$(SOURCE_DIR)/xrun.cpp         \
-	$(SOURCE_DIR)/xthread.cpp         \
 	$(SRCS_IBS)  
 
 INCS =  $(INCLUDE_DIR)/xdefines.h     \
@@ -18,8 +16,6 @@ INCS =  $(INCLUDE_DIR)/xdefines.h     \
 	$(INCLUDE_DIR)/xoneheap.h     \
 	$(INCLUDE_DIR)/xpheap.h \
 	$(INCLUDE_DIR)/privateheap.h \
-	$(INCLUDE_DIR)/xrun.h \
-	$(INCLUDE_DIR)/xthread.h \
 	$(INCLUDE_DIR)/mm.h
 
 INCLUDE_DIRS = -I. -I./heaplayers -I./heaplayers/util
@@ -49,12 +45,12 @@ CFLAGS64 = $(CFLAGS) #-m64 # -O3
 
 #GET_CHARACTERISTICS
 
-TARGETS = libmem64.so
+TARGETS = libyithread64.so
 
 all: $(TARGETS)
 
-libmem64.so: $(DEPS)
-	$(CXX) $(CFLAGS64) $(INCLUDE_DIRS) -shared -fPIC -D'CUSTOM_PREFIX(x)=mem_##x' $(SRCS) -o libmem64.so  -ldl -lpthread 
+libyithread64.so: $(DEPS)
+	$(CXX) $(CFLAGS64) $(INCLUDE_DIRS) -shared -fPIC -D'CUSTOM_PREFIX(x)=mem_##x' $(SRCS) -o libyithread64.so  -ldl -lpthread 
 
 clean:
 	rm -f $(TARGETS)
