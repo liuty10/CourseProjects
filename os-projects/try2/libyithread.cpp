@@ -10,8 +10,9 @@ extern "C" {
   void initializer (void) __attribute__((constructor));
   void finalizer (void)   __attribute__((destructor));
   bool initialized = false;
-  //unsigned long globalStart, globalEnd;
-  //unsigned long heapStart, heapEnd;
+  pthread_mutexattr_t mutex_attr;
+  pthread_condattr_t cond_attr;
+  pthread_barrierattr_t barrier_attr;
 	enum { InitialMallocSize = 1024 * 1024 * 1024 };
 
   void initializer (void) {
@@ -20,6 +21,16 @@ extern "C" {
     init_real_functions();
     xmemory::getInstance().initialize();
     InternalHeap::getInstance().initialize();
+
+    pthread_mutexattr_init(&mutex_attr);
+    pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED);
+
+    pthread_condattr_init(&cond_attr);
+    pthread_condattr_setpshared(&cond_attr, PTHREAD_PROCESS_SHARED);
+    
+    pthread_barrierattr_init(&barrier_attr);
+    pthread_barrierattr_setpshared(&barrier_attr, PTHREAD_PROCESS_SHARED);
+
     initialized = true;
 		fprintf(stderr, "Now we have initialized successfuuly\n"); 
   }
@@ -135,19 +146,19 @@ extern "C" {
 	  return 0;
   }
 
-/*
 void pthread_exit(void * value_ptr) {
-	if(initialized) {
-		xthread::threadDeregister();
-	}
 	_exit(0);
 }
-*****************************************************************************************
-  
 
-int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *) {
+//*****************************************************************************************
+  
+//pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) {
 	if(initialized) {
-		return xthread::mutex_init(mutex);
+      pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED);
+      //pthread_mutexattr_setpshared((pthread_mutexattr_t*)attr, PTHREAD_PROCESS_SHARED);
+      xthread::mutex_init(mutex, (pthread_mutexattr_t*)attr);
 	}
 	return 0;
 }
@@ -159,6 +170,13 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
 	return 0;
 }
 
+int pthread_mutex_trylock(pthread_mutex_t *mutex) {
+	if(initialized) {
+		xthread::mutex_trylock(mutex);
+	}
+	return 0;
+}
+
 int pthread_mutex_unlock(pthread_mutex_t *mutex) {
 	if(initialized) {
 		xthread::mutex_unlock(mutex);
@@ -166,76 +184,67 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex) {
 	return 0;
 }
 
-int pthread_mutex_trylock(pthread_mutex_t *mutex) {
-	DEBUG("pthread_mutex_trylock is not supported");
-	return 0;
-}
-
-int pthread_mutex_destory(pthread_mutex_t *mutex) {
+int pthread_mutex_destroy(pthread_mutex_t *mutex) {
 	if(initialized) {
 		return xthread::mutex_destroy(mutex);
 	}
 	return 0;
 }
 
-int pthread_mutexattr_init(pthread_mutexattr_t *) {
-	return 0;
-}
+//int pthread_mutexattr_init(pthread_mutexattr_t *) {
+//	return 0;
+//}
 
-*****************************************************************************************
+//*****************************************************************************************
 
 int pthread_cond_init(pthread_cond_t * cond, const pthread_condattr_t *attr) {
-	//assert(initialized);
 	if(initialized) {
-		xthread::cond_init((void *) cond);
+    pthread_condattr_setpshared(&cond_attr, PTHREAD_PROCESS_SHARED);
+    //pthread_condattr_setpshared((pthread_condattr_t*)attr, PTHREAD_PROCESS_SHARED);
+		xthread::cond_init(cond, (pthread_condattr_t*)attr);
 	}
 	return 0;
 }
 
 int pthread_cond_broadcast(pthread_cond_t * cond) {
-	//assert(initialized);
 	if(initialized) {
-		xthread::cond_broadcast((void *) cond);
+		xthread::cond_broadcast(cond);
 	}
 	return 0;
 }
 
 int pthread_cond_signal(pthread_cond_t * cond) {
-	//assert(initialized);
 	if(initialized) {
-		xthread::cond_signal((void *) cond);
+		xthread::cond_signal(cond);
 	}
 	return 0;
 }
 
 int pthread_cond_wait(pthread_cond_t * cond, pthread_mutex_t * mutex) {
-	//assert(initialized);
 	if(initialized) {
-		xthread::cond_wait((void *) cond, (void*) mutex);
+		xthread::cond_wait(cond,  mutex);
 	}
 	return 0;
 }
 
 int pthread_cond_destroy(pthread_cond_t * cond) {
-	//assert(initialized);
 	if(initialized) {
 		xthread::cond_destroy(cond);
 	}
 	return 0;
 }
-******************************************************************************************
+//******************************************************************************************
 
-// Add support for barrier functions
 int pthread_barrier_init(pthread_barrier_t *barrier, const pthread_barrierattr_t * attr, unsigned int count) {
-	//assert(initialized);
 	if(initialized) {
-		return xthread::barrier_init(barrier, count);
+    pthread_barrierattr_setpshared(&barrier_attr, PTHREAD_PROCESS_SHARED);
+    //pthread_barrierattr_setpshared((pthread_barrierattr_t *)attr, PTHREAD_PROCESS_SHARED);
+		return xthread::barrier_init(barrier, (pthread_barrierattr_t *)attr, count);
 	}
 	return 0;
 }
 
 int pthread_barrier_destroy(pthread_barrier_t *barrier) {
-	//assert(initialized);
 	if(initialized) {
 		return xthread::barrier_destroy(barrier);
 	}
@@ -243,13 +252,11 @@ int pthread_barrier_destroy(pthread_barrier_t *barrier) {
 }
 
 int pthread_barrier_wait(pthread_barrier_t *barrier) {
-	//assert(initialized);
 	if(initialized) {
 		return xthread::barrier_wait(barrier);
 	}
 	return 0;
 }
-*/
 
 };
 
