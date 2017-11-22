@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include "xmemory.h"
 #include "xthread.h"
+#include "internalheap.h"
 
 extern "C" {
   void initializer (void) __attribute__((constructor));
@@ -18,7 +19,7 @@ extern "C" {
     // before initialized.
     init_real_functions();
     xmemory::getInstance().initialize();
-
+    InternalHeap::getInstance().initialize();
     initialized = true;
 		fprintf(stderr, "Now we have initialized successfuuly\n"); 
   }
@@ -111,7 +112,7 @@ extern "C" {
     }
   }
   //***************************************************************************************
-  int pthread_create(pthread_t * tid, const pthread_attr_t * attr, void *(*fn)(void*), void *arg)  {
+  int pthread_create(pthread_t * tid, const pthread_attr_t * attr, void*(*fn)(void*), void *arg)  {
     if(initialized){
       *tid = *(pthread_t*)xthread::thread_create(fn, arg);
     }
@@ -120,8 +121,9 @@ extern "C" {
 
   int pthread_join(pthread_t tid, void ** val) {
 	  //assert(initialized);
+    printf("in new thread_join\n");
 	  if(initialized) {
-		  xthread::thread_join((void*)tid, val);
+		  xthread::thread_join(tid, val);
 	  }
 	  return 0;
   }

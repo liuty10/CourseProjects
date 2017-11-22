@@ -48,7 +48,7 @@
 
 extern "C"
 {
-  typedef void * threadFunction (void *);
+  typedef int threadFunction (void *);
 	#define gettid() syscall(SYS_gettid)
   
   extern unsigned long textStart, textEnd;

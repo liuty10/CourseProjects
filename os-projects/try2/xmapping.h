@@ -88,7 +88,8 @@ public:
       _isHeap = true;
       void * startHeap = (void *)(USER_HEAP_BASE - metasize);
       // Allocate the application heap
-      ptr = MM::mmapAllocatePrivate(size+metasize, startHeap);
+      ptr = MM::mmapAllocateShared(size+metasize, startHeap);
+      //ptr = MM::mmapAllocatePrivate(size+metasize, startHeap);
       _start = (char *)((intptr_t)ptr + metasize);
       assert(_start == (char *)USER_HEAP_BASE);
       heapStart = (unsigned long)_start;

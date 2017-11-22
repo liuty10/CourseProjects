@@ -46,6 +46,7 @@
 #include "ansiwrapper.h"
 #include "internalheap.h"
 #include "mm.h"
+#include "selfmap.hh"
 
 class xmemory {
 private:
@@ -72,7 +73,6 @@ public:
   	// Initialize the heap and globals. Basically, we need 
 		// spaces to hold access data for both heap and globals.
 	  _heap.initialize(USER_HEAP_SIZE);
-//    _globals.initialize();   
 
   }
 
