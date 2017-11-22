@@ -155,10 +155,11 @@ void pthread_exit(void * value_ptr) {
 //pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) {
-	if(initialized) {
+	printf("aaaaa\n");
+  if(initialized) {
       pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED);
       //pthread_mutexattr_setpshared((pthread_mutexattr_t*)attr, PTHREAD_PROCESS_SHARED);
-      xthread::mutex_init(mutex, (pthread_mutexattr_t*)attr);
+      xthread::mutex_init(mutex, &mutex_attr);
 	}
 	return 0;
 }
@@ -201,7 +202,7 @@ int pthread_cond_init(pthread_cond_t * cond, const pthread_condattr_t *attr) {
 	if(initialized) {
     pthread_condattr_setpshared(&cond_attr, PTHREAD_PROCESS_SHARED);
     //pthread_condattr_setpshared((pthread_condattr_t*)attr, PTHREAD_PROCESS_SHARED);
-		xthread::cond_init(cond, (pthread_condattr_t*)attr);
+		xthread::cond_init(cond, &cond_attr);
 	}
 	return 0;
 }
@@ -239,7 +240,7 @@ int pthread_barrier_init(pthread_barrier_t *barrier, const pthread_barrierattr_t
 	if(initialized) {
     pthread_barrierattr_setpshared(&barrier_attr, PTHREAD_PROCESS_SHARED);
     //pthread_barrierattr_setpshared((pthread_barrierattr_t *)attr, PTHREAD_PROCESS_SHARED);
-		return xthread::barrier_init(barrier, (pthread_barrierattr_t *)attr, count);
+		return xthread::barrier_init(barrier, &barrier_attr, count);
 	}
 	return 0;
 }
