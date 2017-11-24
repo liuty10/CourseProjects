@@ -132,7 +132,7 @@ extern "C" {
 
   int pthread_join(pthread_t tid, void ** val) {
 	  //assert(initialized);
-    printf("in new thread_join\n");
+    //printf("in new thread_join\n");
 	  if(initialized) {
 		  xthread::thread_join(tid, val);
 	  }
@@ -155,7 +155,7 @@ void pthread_exit(void * value_ptr) {
 //pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) {
-	printf("aaaaa\n");
+	//printf("aaaaa\n");
   if(initialized) {
       pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED);
       //pthread_mutexattr_setpshared((pthread_mutexattr_t*)attr, PTHREAD_PROCESS_SHARED);

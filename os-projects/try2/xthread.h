@@ -37,14 +37,8 @@ class xthread{
 
             int i=0;
             for(i=0; i<regionNumb; i++){
-              printf("region[%d].start: %p, end: %p\n", i, regions[i].start, regions[i].end);
-            }
-            for(i=0; i<regionNumb; i++){
-              printf("regionNumb: %d, i = %d\n", regionNumb, i); 
               size_t len = (char*)regions[i].end - (char*)regions[i].start;
-              printf("regionNumb: before mmap: %zu\n",len); 
               void * backup = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-              printf("regionNumb: after mmap"); 
               memcpy(backup, regions[i].start, len);
               if(munmap(regions[i].start, len) == -1){
                 printf("unmap region[%d] fail\n",i);
@@ -57,10 +51,8 @@ class xthread{
               }
               memcpy(regions[i].start, backup, len);
               munmap(backup, len);
-              printf("This is a new thread_create function in for loop\n"); 
             }
         }
-        printf("This is a new thread_create function\n"); 
         pthread_t *pid=(pthread_t*)malloc(sizeof(pthread_t));
         void* childstack = mmap(NULL, 1024*1024, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
         if(childstack == MAP_FAILED){
@@ -68,7 +60,6 @@ class xthread{
            exit(0);
         }
         void* childstackend = (void*)((char*)childstack + 1024*1024);
-        printf("childstack: %p, end: %p\n", childstack, childstackend); 
         //int child = syscall(SYS_clone, CLONE_FS | CLONE_FILES | SIGCHLD, (void*) 0);
         int child = clone((int(*)(void*))fn, childstackend , CLONE_IO | CLONE_FS | CLONE_FILES | SIGCHLD, arg);
 
@@ -99,7 +90,7 @@ class xthread{
     }
 
     static inline int mutex_lock(pthread_mutex_t *mutex) {
-      printf("in mutext lock() function\n");
+      //printf("in mutext lock() function\n");
 		  WRAP(pthread_mutex_lock)(mutex);
 	    return 0;
     }
