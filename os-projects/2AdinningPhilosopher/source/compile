@@ -1,0 +1,1 @@
+gcc test.c -o test-yithread -rdynamic /home/tianyiliu/myprojects/CourseProjects/os-projects/try2/libyithread64.so -ldl
